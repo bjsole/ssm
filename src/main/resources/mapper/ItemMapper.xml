@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qf.mapper.ItemMapper">
+
+    <!--//查询总条数-->
+    <!--Long getCountByName(@Param("name")String name);-->
+    <select id="getCountByName" resultType="Long">
+        select count(1) from item
+        <where>
+            <if test="name !=null and name!=''">
+                name like "%"#{name}"%"
+            </if>
+        </where>
+    </select>
+
+    <!--//分页查询商品信息-->
+    <!--List<Item> findItemByNameLikeAndLimit(-->
+    <!--@Param("name")String name,-->
+    <!--@Param("offset")String offset,-->
+    <!--@Param("size")String size);-->
+    <select id="findItemByNameLikeAndLimit" resultType="Item">
+        select * from item
+        <where>
+            <if test="name !=null and name!=''">
+                name like "%"#{name}"%"
+            </if>
+        </where>
+        order by created desc
+        limit #{offset},#{size}
+    </select>
+
+    <!--//添加商品信息-->
+    <!--Integer save(Item item);-->
+    <insert id="save" parameterType="Item">
+        insert into item
+        (name, price, production_date, description, pic)
+        values
+        (#{name},#{price},#{productionDate},#{description},#{pic});
+    </insert>
+
+    <!--//删除商品-->
+    <!--Integer delById(@Param("id") Long id);-->
+    <delete id="delById">
+        delete from item where id = #{id}
+    </delete>
+
+    <!--//根据id查询商品-->
+    <!--Item findById(@Param("id") Long id);-->
+    <select id="findById" resultType="Item">
+        select * from item where id = #{id}
+    </select>
+
+    <!--//更新商品信息-->
+    <!--Integer update(Item item);-->
+    <update id="update" parameterType="Item">
+        update item
+        <set>
+            <if test="name!=null and name!=''">
+                name = #{name},
+            </if>
+            <if test="price!=null">
+                price = #{price},
+            </if>
+            <if test="productionDate!=null">
+                production_date = #{productionDate},
+            </if>
+            <if test="description!=null and description!=''">
+                description =#{description},
+            </if>
+            <if test="pic!=null and pic!=''">
+                pic = #{pic}
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+</mapper>
